@@ -74,6 +74,7 @@ class BaseModel(torch.nn.Module):
             #network.load_state_dict(torch.load(save_path))
             try:
                 network.load_state_dict(torch.load(save_path))
+                print("Pesos carregados (rede %s): %s" %(network_label, save_path))
             except:   
                 pretrained_dict = torch.load(save_path)                
                 model_dict = network.state_dict()

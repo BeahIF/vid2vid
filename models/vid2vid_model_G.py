@@ -42,14 +42,18 @@ class Vid2VidModelG(BaseModel):
             setattr(self, 'netG'+str(s), networks.define_G(netG_input_nc, opt.output_nc, prev_output_nc, ngf, opt.netG+'Local', 
                                                            opt.n_downsample_G, opt.norm, s, self.gpu_ids, opt))
 
-        print('---------- Networks initialized -------------') 
+        print('---------- Networks initialized -------------')
         print('-----------------------------------------------')
 
         # load networks
-        if not self.isTrain or opt.continue_train or opt.load_pretrain:                    
-            for s in range(self.n_scales):
-                self.load_network(getattr(self, 'netG'+str(s)), 'G'+str(s), opt.which_epoch, opt.load_pretrain)
-                
+        if not self.isTrain or opt.continue_train or opt.load_pretrain:
+            try:
+                for s in range(self.n_scales):
+                    self.load_network(getattr(self, 'netG'+str(s)), 'G'+str(s), opt.which_epoch, opt.load_pretrain)
+            except Exception as e:
+                if not opt.continue_train:
+                    raise Exception(e)
+
         self.netG_i = self.load_single_G() if self.use_single_G else None
         
         # define training variables
